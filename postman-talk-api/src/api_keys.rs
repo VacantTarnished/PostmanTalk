@@ -17,7 +17,9 @@ impl<'r> FromRequest<'r> for UserKey<'r> {
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
         /// Returns true if `key` is a valid API key string.
         fn is_valid(key: &str) -> bool {
-            key == "valid_api_key"
+            let keys = ["valid_api_key", "valid_api_key_2"];
+
+            keys.contains(&key)
         }
 
         match req.headers().get_one("x-api-key") {
