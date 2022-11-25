@@ -23,9 +23,9 @@ impl<'r> FromRequest<'r> for UserKey<'r> {
         }
 
         match req.headers().get_one("x-api-key") {
-            None => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
+            None => Outcome::Failure((Status::Forbidden, ApiKeyError::Missing)),
             Some(key) if is_valid(key) => Outcome::Success(UserKey(key)),
-            Some(_) => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
+            Some(_) => Outcome::Failure((Status::Forbidden, ApiKeyError::Invalid)),
         }
     }
 }
@@ -41,9 +41,9 @@ impl<'r> FromRequest<'r> for AdminKey<'r> {
         }
 
         match req.headers().get_one("x-api-key") {
-            None => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
+            None => Outcome::Failure((Status::Forbidden, ApiKeyError::Missing)),
             Some(key) if is_valid(key) => Outcome::Success(AdminKey(key)),
-            Some(_) => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
+            Some(_) => Outcome::Failure((Status::Forbidden, ApiKeyError::Invalid)),
         }
     }
 }

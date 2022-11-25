@@ -88,7 +88,7 @@ fn post_data(name: String, id: i32, data: String, _key: UserKey<'_>) -> Result<S
     result
 }
 
-#[get("/data")]
+#[get("/data/id")]
 fn get_all_data_ids(_key: AdminKey<'_>) -> Result<JsonResponder, Status> {
     let mut result: Result<JsonResponder, Status> = Err(Status::NotFound);
     let files = fs::read_dir("../data");
@@ -171,8 +171,8 @@ fn get_data(id: i32) -> Result<String, Status> {
     result
 }
 
-#[patch("/data/<id>", format = "application/json", data = "<data>")]
-fn patch_data(id: i32, data: String, _key: UserKey<'_>) -> Result<String, Status> {
+#[put("/data/<id>", format = "application/json", data = "<data>")]
+fn put_data(id: i32, data: String, _key: UserKey<'_>) -> Result<String, Status> {
     let mut result: Result<String, Status> = Err(Status::NotFound);
     let files = fs::read_dir("../data");
 
@@ -190,7 +190,7 @@ fn patch_data(id: i32, data: String, _key: UserKey<'_>) -> Result<String, Status
                         let file = File::create(file.path());
                         if file.is_ok() {
                             file.unwrap().write_all(data.as_bytes()).unwrap();
-                            result = Ok("Data patched".to_string());
+                            result = Ok("Data updated".to_string());
                         } else {
                             result = Err(Status::InternalServerError);
                         }
@@ -281,5 +281,5 @@ fn delete_all_data(_key: AdminKey<'_>) -> Result<String, Status> {
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index, get_hello, post_data, get_data, get_all_data_ids, patch_data, delete_data, delete_all_data]).attach(fairings::CORS)
+    rocket::build().mount("/", routes![index, get_hello, post_data, get_data, get_all_data_ids, put_data, delete_data, delete_all_data]).attach(fairings::CORS)
 }
